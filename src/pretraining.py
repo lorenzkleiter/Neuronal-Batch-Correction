@@ -12,7 +12,7 @@ import os
 """
 Update loading function: to load all data in a directory
 """
-test = loading.load('large_atac_gene_activity')
+test = loading.load_dataset('large_atac_gene_activity')
 
 #Create and train Autoencoder on imported Data
 autoencoder = create_autoencoder(test, 256, 'relu', 'linear')

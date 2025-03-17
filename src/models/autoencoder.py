@@ -7,14 +7,17 @@ from tensorflow.keras.regularizers import l2
 import matplotlib.pyplot as plt
 from scipy import sparse
 import anndata
+from sklearn.preprocessing import OneHotEncoder
 
-#Creating a autoencoder:
-#This Function returns an compiled autoencoder
+#Function 1:
+#---Creating an autoencoder---
+#Input: Data, N_Hidden, activation functions 
+#Output: This Function returns an compiled autoencoder
 """
 Missing right now! L2 reg. Leaky layer
 """
 def create_autoencoder( 
-                        adata,                           #anndata object: Only necessary to get size
+                        adata,                          #anndata object: Only necessary to get size
                         N_HIDDEN,                       #int: Number of Nodes that the Encoder comprsses the data to
                         ACTIVATION_FUNCTION_ENCODER,    #str: activation function of the encoder
                         ACTIVATION_FUNCTION_DECODER     #str: activation function of the decoder
@@ -47,9 +50,11 @@ def create_autoencoder(
 
     return autoencoder      #return an compiled autoencoder object
 
-#Train a autoencoder
-#This Function returns the history of trainig
-
+#Function 2:
+#---Training an autoencoder---
+#This Function trains the autoencoder on reconstruction loss
+#Input: Data, Autoencoder, Epochs, BATCH_Size 
+#Output: This Function returns an compiled autoencoder
 def train_autoencoder( 
                         adata,                           #anndata object: Training set
                         autoencoder,                    #compiled autoencoder object from creat_autoencoder
@@ -79,8 +84,96 @@ def train_autoencoder(
 
     return autoencoder 
 
-#Function to autoencode data:
-#This returns the updated data as Anndata object
+#Function 3:
+# ---Adverserial Training: Define Trainng function--- 
+#Used by Function 4
+#Define the autoencoder adversarial training function
+#overriding the normal training function
+@tf.function 
+def train_autoencoder_adversarial(gene_expression, batch_labels, autoencoder, discriminator, optimizer):
+    """
+    Train the autoencoder to fool the discriminator into classifying reconstructions as target classes.
+    
+    Args:
+        gene_expression: Input gene_expression data
+        batch_labels: One-hot encoded target batch labels to fool the discriminator
+        encoder: Pretrained encoder model
+        decoder: Pretrained decoder model
+        discriminator: Pretrained discriminator model (frozen during this training)
+        optimizer: Optimizer for the autoencoder
+    """
+    with tf.GradientTape() as tape:
+        # CAll autoencoder to get reconstructed gene expression
+        reconstructed_gene_expression = autoencoder(gene_expression)
+        
+        # Get discriminator output for reconstructed gene expression
+        disc_output = discriminator(reconstructed_gene_expression)
+        
+        # Adversarial loss - make discriminator classify reconstructions as target labels
+        adversarial_loss = tf.keras.losses.CategoricalCrossentropy()(batch_labels, disc_output)
+    
+    # Get gradients and update autoencoder weights only
+    gradients = tape.gradient(adversarial_loss, autoencoder.trainable_variables)
+    optimizer.apply_gradients(zip(gradients, autoencoder.trainable_variables))
+    
+    return adversarial_loss
+
+#Function 4: Adverserial Training loop
+#---Adverserial Training: Create custom training loop---
+#Input: Anndata Object, Epochs, Batch_size, Autoencoder, Discriminaotr
+#Output: Autoencoder
+"""
+Implement later: reconstruction loss print out
+"""
+def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator):
+    #Data is prepared: adata to Tensorflow dataset
+    #ADATA->NUMPY
+    GENE_EXPRESSION = adata.X.toarray()
+
+    #One-hot encoded Batches
+    encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
+    BATCH_LABELS = encoder.fit_transform(adata.obs[['batchname_all']])
+    #Combine in a Tensorflow dataset
+    train_dataset = tf.data.Dataset.from_tensor_slices((GENE_EXPRESSION, BATCH_LABELS))
+    #Create batches
+    batch_size = BATCHES
+    train_dataset = train_dataset.batch(batch_size)
+
+    # Freeze the discriminator weights
+    discriminator.trainable = False
+    
+    # Optimizer for the autoencoder
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+    
+    # Training loop
+    for epoch in range(epochs):
+        adv_loss_avg = tf.keras.metrics.Mean()
+
+        for batch in train_dataset:
+            gene_expression, batch_labels = batch
+            
+            # Target same class as original
+            target_labels = batch_labels
+            
+            # Train autoencoder
+            adv_loss = train_autoencoder_adversarial(
+                gene_expression, target_labels, autoencoder, discriminator, optimizer
+            )
+            
+            # Update adv loss
+            adv_loss_avg.update_state(adv_loss)
+
+        
+        # Print epoch results
+        print(f"Epoch {epoch+1}/{epochs}")
+        print(
+              f"Adversarial Loss: {adv_loss_avg.result():.4f}, " 
+            )
+    return autoencoder
+
+#Function 1: autoencode data:
+#Input: Anndata Object
+#Output: Anndata Object
 def autoencode(
                 adata,          #anndata object: Input data
                 autoencoder     #Compiled Autoencoder
@@ -99,3 +192,4 @@ def autoencode(
     OUTPUT.obs = adata.obs
     OUTPUT.var= adata.var
     return OUTPUT
+
