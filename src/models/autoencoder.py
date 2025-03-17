@@ -56,6 +56,7 @@ def train_autoencoder(
                         EPOCH,                          #int: number of epochs trained
                         BATCH_SIZE                      #int: Size of Batch
                         ):
+    #Get the INPUT
     INPUT =  adata.X.toarray()
 
     # The autoencoder fits the data to the data -> in the end nothing should change

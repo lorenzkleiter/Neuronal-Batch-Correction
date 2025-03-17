@@ -28,7 +28,11 @@ def create_discriminator(
     encoded_labels = encoder.fit_transform(adata.obs[['final_cell_label']])
 
     # Concatenate gen expreesion matrix with oneHotLabels
-    INPUT = np.concatenate((INPUT, encoded_labels), axis=1)
+    #INPUT = np.concatenate((INPUT, encoded_labels), axis=1)
+    """
+    remove encoded_label for testing
+    """
+
     #One-hot encode the Batches
     encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
     OUTPUT = encoder.fit_transform(adata.obs[['batchname_all']])
@@ -39,7 +43,8 @@ def create_discriminator(
     #Output and Input size of NN
     INPUT_size = INPUT[0].size
     OUTPUT_size = OUTPUT[0].size
-
+    print(INPUT_size)
+    print(OUTPUT_size)
 
     #---Initilize Model---
     model = Sequential()
@@ -72,13 +77,15 @@ def train_discriminator(
                     ):
     #---Prepare Data---
     INPUT =  adata.X.toarray()
-
+    """
+    removed for testing
+    """
     #Encode the cell labels as One hot vector to use as additional information
-    encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
-    encoded_labels = encoder.fit_transform(adata.obs[['final_cell_label']])
-
+    #encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
+    #encoded_labels = encoder.fit_transform(adata.obs[['final_cell_label']])
     # Concatenate gen expreesion matrix with oneHotLabels
-    INPUT = np.concatenate((INPUT, encoded_labels), axis=1)
+    #INPUT = np.concatenate((INPUT, encoded_labels), axis=1)
+   
     #One-hot encode the Batches
     encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
     OUTPUT = encoder.fit_transform(adata.obs[['batchname_all']])
