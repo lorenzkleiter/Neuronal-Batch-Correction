@@ -37,9 +37,6 @@ def create_discriminator(
     encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
     OUTPUT = encoder.fit_transform(adata.obs[['batchname_all']])
 
-    #Perform a Train Test Split
-    INPUT_train, INPUT_test, OUTPUT_train, OUTPUT_test = train_test_split(INPUT, OUTPUT, test_size=0.2, random_state=random_seed)
-
     #Output and Input size of NN
     INPUT_size = INPUT[0].size
     OUTPUT_size = OUTPUT[0].size
@@ -79,7 +76,7 @@ def train_discriminator(
     #---Prepare Data---
     INPUT =  adata.X.toarray()
     """
-    removed for testing
+    removed for testing: Impliment later?
     """
     #Encode the cell labels as One hot vector to use as additional information
     #encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array

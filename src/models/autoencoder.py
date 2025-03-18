@@ -1,6 +1,5 @@
 #---autoencoder---
 #import modules
-from math import log, log1p
 from matplotlib import figure
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -196,7 +195,7 @@ def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, los
         learning_rate: int: suggested 0.000001
     Return:
     history: log file
-    discriminator: updated autoencoder model
+    autoencoder: updated autoencoder model
     """
     # Initialize an empty history arrays
     adversarial_losses = []
@@ -275,10 +274,13 @@ def plot_ad_training(history):
     plt.plot(history["adversarial_loss"])
     plt.title('adversarial_loss')
     plt.ylabel('Loss')
+    plt.xlabel('Epoch')
 
     plt.subplot(1, 3, 3)
     plt.plot(history["reconstruction_loss"])
     plt.title('reconstruction_loss')
     plt.ylabel('Loss')
+    plt.xlabel('Epoch')
+
     plt.show()
     return figure

@@ -1,6 +1,5 @@
-#---Pretraining of models---
-# 1. autoencoder is trained with mse as loss function to reproduce data
-# 2. batch discriminator is trained to distinguish n batches 
+#---Pretraining of an autoencoder---
+# autoencoder is trained with mse as loss function to reproduce data - to get intilisation
 
 #imports
 from utils import loading
@@ -17,22 +16,8 @@ history, autoencoder = train_autoencoder(test, autoencoder, 1, 300)
 #Plot history
 figure = plot_ac_training(history)
 
-#Autoencode Data
-test_autoencoded = autoencode(test, autoencoder)
-
-#Create and train the discriminator on autoencoded Data
-discriminator = create_discriminator(test_autoencoded, 256, 128, 0.0075, 'relu')
-history, discriminator = train_discriminator(test_autoencoded, discriminator, 1, 300, True)
-#Plot history
-figure = plot_dc_training(history)
-
-#Save Discriminator and autoencoder into model directory
-file_name = "autoencoder_mselossfunction.keras"
+#Save autoencoder into model directory
+file_name = "autoencoder_mseloss.keras"
 save_path = f"models/saved_models/{file_name}"
 autoencoder.save(save_path)
 print(f"autoencoder saved to {save_path}")
-
-file_name = "discriminator_pretrained.keras"
-save_path = f"models/saved_models/{file_name}"
-discriminator.save(save_path)
-print(f"discriminator saved to {save_path}")
