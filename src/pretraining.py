@@ -4,35 +4,33 @@
 
 #imports
 from utils import loading
-from models.autoencoder import train_autoencoder, create_autoencoder, autoencode
-from models.discriminator import create_discriminator, train_discriminator
+from models.autoencoder import plot_ac_training, train_autoencoder, create_autoencoder, autoencode, plot_ac_training
+from models.discriminator import create_discriminator, train_discriminator, plot_dc_training 
 import os
 
 #Import Data
-"""
-Update loading function: to load all data in a directory
-"""
 test = loading.load_dataset('large_atac_gene_activity')
 
 #Create and train Autoencoder on imported Data
 autoencoder = create_autoencoder(test, 256, 'relu', 'linear')
-autoencoder = train_autoencoder(test, autoencoder, 10, 30)
-print(autoencoder.input_shape)
+history, autoencoder = train_autoencoder(test, autoencoder, 10, 30)
+#Plot history
+figure = plot_ac_training(history)
 
 #Autoencode Data
 test_autoencoded = autoencode(test, autoencoder)
-print(f"Shape of autoencoded_data: {test_autoencoded.shape}")
 
 #Create and train the discriminator on autoencoded Data
 discriminator = create_discriminator(test_autoencoded, 256, 128, 0.0075, 'relu')
-discriminator = train_discriminator(test_autoencoded, discriminator, 10, 30)
-print(f"Shape of discriminator_input: {discriminator.input_shape}")
+history, discriminator = train_discriminator(test_autoencoded, discriminator, 10, 30, True)
+#Plot history
+figure = plot_dc_training(history)
 
 #Save Discriminator and autoencoder into model directory
 file_name = "autoencoder_mselossfunction.keras"
 save_path = f"models/saved_models/{file_name}"
 autoencoder.save(save_path)
-print(f"autoencoder saved to {save_path}")#
+print(f"autoencoder saved to {save_path}")
 
 file_name = "discriminator_pretrained.keras"
 save_path = f"models/saved_models/{file_name}"

@@ -72,7 +72,8 @@ def train_discriminator(
                         adata,                          #anndata object: Dataset
                         model,
                         EPOCH,                          #int: number of epochs trained
-                        BATCH_SIZE,                      #int: Size of Batch
+                        BATCH_SIZE,                     #int: Size of Batch
+                        shuffle,                        #conditional
                         random_seed=42,
                     ):
     #---Prepare Data---
@@ -93,18 +94,21 @@ def train_discriminator(
     #Perform a Train Test Split
     INPUT_train, INPUT_test, OUTPUT_train, OUTPUT_test = train_test_split(INPUT, OUTPUT, test_size=0.2, random_state=random_seed)
 
-    #Perform a Train Test Split
+    #Perform the training
     #Fit the input to the output
-    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=2, validation_split=0.2)
+    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=2, validation_split=0.2, shuffle=shuffle)
 
-    #test the network
+    #score the network
     score = model.evaluate(INPUT_test, OUTPUT_test, verbose=2)
     print("\nTest score/loss:", score[0])
     print("Test accuracy:", score[1])
 
-    #--Visualisize Training---
+    return history, model
+
+def plot_dc_training(history):
+     #--Visualisize Training---
     # Plot training & validation accuracy
-    plt.figure(figsize=(12, 4))
+    figure = plt.figure(figsize=(12, 4))
     plt.subplot(1, 2, 1)
     plt.plot(history.history['accuracy'])
     plt.plot(history.history['val_accuracy'])
@@ -124,4 +128,4 @@ def train_discriminator(
     plt.tight_layout()
     plt.show()
 
-    return model
+    return figure

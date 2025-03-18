@@ -3,7 +3,7 @@
 
 #imports
 from utils import loading
-from models.autoencoder import adversarial_training
+from models.autoencoder import adversarial_training, plot_ad_training
 import os
 
 #Import Data
@@ -14,10 +14,12 @@ discriminator = loading.load_model('discriminator_pretrained')
 autoencoder = loading.load_model('autoencoder_mselossfunction')
 
 #Train autoencoder adversially
-autoencoder = adversarial_training(test, 20, 30, autoencoder, discriminator)
+history, autoencoder = adversarial_training(test, 10, 50, autoencoder, discriminator, "log", 0.000001)
+#Plot history
+plot = plot_ad_training(history)
 
 #Save autoencoder into model directory
 file_name = "autoencoder_adverserialtrained.keras"
 save_path = f"models/saved_models/{file_name}"
 autoencoder.save(save_path)
-print(f"autoencoder saved to {save_path}")#
+print(f"autoencoder saved to {save_path}")
