@@ -3,7 +3,7 @@
 from matplotlib import figure
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.regularizers import l2
 import matplotlib.pyplot as plt
 from scipy import sparse
@@ -21,6 +21,7 @@ Missing right now! L2 reg. Leaky layer, custom. learning rate
 def create_autoencoder( 
                         adata,                          #anndata object: Only necessary to get size
                         N_HIDDEN,                       #int: Number of Nodes that the Encoder comprsses the data to
+                        DROPOUT_RATE,                   #int: Rate of Dropout in Dropout layer int: 0-1
                         ACTIVATION_FUNCTION_ENCODER,    #str: activation function of the encoder
                         ACTIVATION_FUNCTION_DECODER     #str: activation function of the decoder
                         ):
@@ -36,7 +37,9 @@ def create_autoencoder(
     #Initilize the decoder
     decoder = Sequential()
     # add one output layer to the decoder, with the input size N_hidden and the output size to the input size
-    decoder.add(Dense(INPUT_size, activation=ACTIVATION_FUNCTION_ENCODER))
+    decoder.add(Dense(INPUT_size, activation=ACTIVATION_FUNCTION_DECODER))
+    # Add a dropout layer to the encoder
+    encoder.add(Dropout(DROPOUT_RATE))
 
     # Define the autoencoder model
     input = tf.keras.Input(shape=(INPUT_size,)) #Generic input
@@ -44,9 +47,6 @@ def create_autoencoder(
     decoded = decoder(encoded)  #decoder input
 
     autoencoder = tf.keras.Model(input, decoded) #autoencoder: takes input and returns decoded data
-
-    # Compile the autoencoder
-    autoencoder.compile(optimizer='adam', loss='mse') #adam: type of optimizer used to minimize the loss function. mse: loss function. difference between input and output
 
     print(autoencoder.summary())
 
@@ -58,14 +58,21 @@ def create_autoencoder(
 #Input: Data, Autoencoder, Epochs, BATCH_Size 
 #Output: This Function returns an compiled autoencoder
 def train_autoencoder( 
-                        adata,                           #anndata object: Training set
+                        adata,                          #anndata object: Training set
                         autoencoder,                    #compiled autoencoder object from creat_autoencoder
                         EPOCH,                          #int: number of epochs trained
-                        BATCH_SIZE                      #int: Size of Batch
+                        BATCH_SIZE,                     #int: Size of Batch
+                        learning_rate                   # rate of learning
                         ):
     #Get the INPUT
     INPUT =  adata.X.toarray()
 
+    #Define the optimizer
+    optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
+
+    # Compile the autoencoder
+    autoencoder.compile(optimizer=optimizer, loss='mse') #adam: type of optimizer used to minimize the loss function. mse: loss function. difference between input and output
+    
     # The autoencoder fits the data to the data -> in the end nothing should change
     history = autoencoder.fit(INPUT, INPUT,
                 epochs=EPOCH,
@@ -75,18 +82,7 @@ def train_autoencoder(
                 verbose=2) # shuffle the data after each epoch to reduce overfitting
     return history, autoencoder 
 
- #--Visualisize Training---
-def plot_ac_training(history):
-    # Plot training & validation loss
-    figure = plt.figure()
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss'])
-    plt.title('Autoencoder Loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Validation'], loc='upper right')
-    plt.show()
-    return figure
+
 
 #Function 3: autoencode data:
 #Input: Anndata Object
@@ -128,6 +124,7 @@ def loss_function_log(disc_output, batch_labels):
     pred_confidence = (tf.reduce_sum(batch_labels * disc_output))/batch_size
     #Adversarial loss - make discriminator classify reconstructions as target labels
     adversarial_loss = -tf.math.log(1-pred_confidence)
+    
     return adversarial_loss
 
 def loss_function_uniform(disc_output, batch_labels):
@@ -144,7 +141,7 @@ def loss_function_uniform(disc_output, batch_labels):
 #overriding the normal training function
 
 @tf.function 
-def train_autoencoder_adversarial(gene_expression, batch_labels, autoencoder, discriminator, optimizer, loss_function):
+def train_autoencoder_adversarial(gene_expression, batch_labels, autoencoder, discriminator, optimizer, loss_function, l2):
     """
     Train the autoencoder to fool the discriminator into classifying reconstructions as target classes.
     
@@ -167,6 +164,16 @@ def train_autoencoder_adversarial(gene_expression, batch_labels, autoencoder, di
         if loss_function == 'log': adverserial_loss = loss_function_log(batch_labels, disc_output)
         elif loss_function == 'uniform': adverserial_loss = loss_function_uniform(batch_labels, disc_output)
 
+        # Calculate L2 regularization loss for autoencoder
+        l2_loss_autoencoder = 0.0
+        for var in autoencoder.trainable_variables:
+            if 'kernel' in var.name:  # Only apply to weights, not biases
+                l2_loss_autoencoder += tf.nn.l2_loss(var)
+        
+
+        #Add L2 loss to adverserial loss
+        total_loss = adverserial_loss + l2_loss_autoencoder*l2
+
         # Reconstruction loss - check much the data is transformed
         reconstruction_loss = tf.keras.losses.MeanSquaredError()(gene_expression, reconstructed_gene_expression)
     
@@ -174,14 +181,14 @@ def train_autoencoder_adversarial(gene_expression, batch_labels, autoencoder, di
     gradients = tape.gradient(adverserial_loss, autoencoder.trainable_variables)
     optimizer.apply_gradients(zip(gradients, autoencoder.trainable_variables))
     
-    return adverserial_loss, reconstruction_loss
+    return adverserial_loss, reconstruction_loss, l2_loss_autoencoder, total_loss
 
 #Function 5: Adverserial Training loop
 #---Adverserial Training: Create custom training loop---
 #Input: Anndata Object, Epochs, Batch_size, Autoencoder, Discriminaotr
 #Output: Autoencoder
 
-def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, loss_function, learning_rate):
+def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, loss_function, learning_rate, l2, batch_key):
     """
     Adversarial Training
     
@@ -193,6 +200,7 @@ def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, los
         discriminator: Pretrained discriminator model (frozen during this training)
         loss_function: str: log or uniform. See Function 4/5
         learning_rate: int: suggested 0.000001
+        l2: regularisation amount: int 0.00005 suggested
     Return:
     history: log file
     autoencoder: updated autoencoder model
@@ -207,7 +215,7 @@ def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, los
     GENE_EXPRESSION = adata.X.toarray()
     #One-hot encoding the Batches
     encoder = OneHotEncoder(sparse_output=False)  # `sparse=False` returns a dense array
-    BATCH_LABELS = encoder.fit_transform(adata.obs[['batchname_all']])
+    BATCH_LABELS = encoder.fit_transform(adata.obs[[batch_key]])
     #Combine NUMPY and One-hot encoded Batches in a Tensorflow dataset
     train_dataset = tf.data.Dataset.from_tensor_slices((GENE_EXPRESSION, BATCH_LABELS))
     #Create training batches
@@ -231,13 +239,16 @@ def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, los
             gene_expression, batch_labels = batch
             
             # Train autoencoder
-            adv_loss, rec_loss = train_autoencoder_adversarial(
-                gene_expression, batch_labels, autoencoder, discriminator, optimizer, loss_function
+            adv_loss, rec_loss, l2_loss, tot_loss = train_autoencoder_adversarial(
+                gene_expression, batch_labels, autoencoder, discriminator, optimizer, loss_function, l2
             )
             # Update adv loss
-            dis_loss_avg.update_state(adv_loss)
+            dis_loss_avg.update_state(tot_loss)
             rec_loss_avg.update_state(rec_loss)
 
+            #print("adversarial_loss: ", adv_loss)
+            #print("l2_loss: ", l2_loss)
+            #print("tot_loss: ", tot_loss)
         
         # print epoch results
         print(f"Epoch {epoch+1}/{epochs}")
@@ -258,29 +269,4 @@ def adversarial_training(adata, epochs, BATCHES, autoencoder, discriminator, los
         })
     return history, autoencoder
 
- #--Visualisize Training---
-def plot_ad_training(history):
 
-    # Plot training & validation loss
-    figure = plt.figure(figsize=(12, 4))
-    plt.subplot(1, 3, 1)
-    plt.plot(history["accuracy"])
-    #plt.plot(history["reconstruction_loss"])
-    plt.title('accuracy')
-    plt.ylabel('accuracy')
-    plt.xlabel('Epoch')
-
-    plt.subplot(1, 3, 2)
-    plt.plot(history["adversarial_loss"])
-    plt.title('adversarial_loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-
-    plt.subplot(1, 3, 3)
-    plt.plot(history["reconstruction_loss"])
-    plt.title('reconstruction_loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-
-    plt.show()
-    return figure

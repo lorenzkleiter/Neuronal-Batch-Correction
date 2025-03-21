@@ -2,19 +2,32 @@
 # autoencoder is trained with mse as loss function to reproduce data - to get intilisation
 
 #imports
-from utils import loading
-from models.autoencoder import plot_ac_training, train_autoencoder, create_autoencoder, autoencode, plot_ac_training
-from models.discriminator import create_discriminator, train_discriminator, plot_dc_training 
-import os
+from utils import loading, plot
+from models.autoencoder import train_autoencoder, create_autoencoder
 
 #Import Data
-test = loading.load_dataset('large_atac_gene_activity')
+test = loading.load_dataset('Lung_atlas_public')
+label_key = 'cell_type'
+batch_key = 'batch'
+
 
 #Create and train Autoencoder on imported Data
-autoencoder = create_autoencoder(test, 256, 'relu', 'linear')
-history, autoencoder = train_autoencoder(test, autoencoder, 1, 300)
+autoencoder = create_autoencoder(   test,                          #anndata object: Only necessary to get size
+                                    256,                           #int: Number of Nodes that the Encoder comprsses the data to
+                                    0.3,                           #int: Dropout rate
+                                    'relu',                        #str: activation function of the encoder
+                                    'linear',                      #str: activation function of the decoder
+                                )
+
+history, autoencoder = train_autoencoder( 
+                                            test,                           #anndata object: Training set
+                                            autoencoder,                    #compiled autoencoder object from create_autoencoder
+                                            10,                             #int: number of epochs trained
+                                            64,                             #int: Size of Batch
+                                            0.0001                         #int: learning rate
+                                        )
 #Plot history
-figure = plot_ac_training(history)
+figure = plot.autoencoder(history)
 
 #Save autoencoder into model directory
 file_name = "autoencoder_mseloss.keras"

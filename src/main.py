@@ -1,6 +1,6 @@
-from pretraining import pretrainer
-from adversialtraining import adtrainert
-from celltypetraining import celltrainer
+from training.discriminatortraining import dctrainer
+from training.adverserialtraining import adtrainer
+from training.finaltraining import jointtrainer
 
 
 def NBC(
@@ -9,8 +9,8 @@ def NBC(
         collum_name_celltypes       #str: the name of your cell label collumn
         ):
 
-    pretrainer(adata, collumn_name_batches, collum_name_celltypes)
+    dctrainer(adata, collumn_name_batches, collum_name_celltypes)
     adtrainer(adata, collumn_name_batches, collum_name_celltypes)
-    corrected_data = celltrainer(adata, collumn_name_batches, collum_name_celltypes)
+    corrected_data = jointtrainer(adata, collumn_name_batches, collum_name_celltypes)
 
     return corrected_data
