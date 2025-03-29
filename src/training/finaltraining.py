@@ -46,16 +46,16 @@ test_model(classifier, autocorrected_test, label_key)
 history, autoencoder, classifier = autoencoder_classifier_jointtraining(
                                                                         test,           #anndata object: Dataset
                                                                         30,             #epochs
-                                                                        128,             #batch size
+                                                                        128,            #batch size
                                                                         autoencoder,    #autoencoder: gets updated
                                                                         classifier,     #compiled classifier: gets trained
                                                                         discriminator,  #discriminator: there to check discriminator accuracy
-                                                                        0.00001,         #learning rate autoencoder
+                                                                        0.00001,        #learning rate autoencoder
                                                                         0.001,          #learning rate classifier
                                                                         0.5,            #weighting of reconstructio loss vs. classifier loss
                                                                         True,           #True to enable simulatious adverserial training
                                                                         "uniform",      #loss function: log or uniform
-                                                                        True,          #True to freeze classifier weight updating
+                                                                        False,          #True to freeze classifier weight updating
                                                                         label_key,
                                                                         batch_key
                                                                         )
@@ -64,7 +64,7 @@ history, autoencoder, classifier = autoencoder_classifier_jointtraining(
 figure = plot.joint(history)
 
 #Save autoencoder into model directory
-file_name = "autoencoder_final_onestep.keras"
+file_name = "autoencoder_final_onestep_classifier.keras"
 save_path = f"models/saved_models/{file_name}"
 autoencoder.save(save_path)
 print(f"autoencoder saved to {save_path}")
