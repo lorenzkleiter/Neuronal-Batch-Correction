@@ -48,14 +48,14 @@ history, autoencoder, classifier = autoencoder_classifier_jointtraining(
                                                                         30,             #epochs
                                                                         128,            #batch size
                                                                         autoencoder,    #autoencoder: gets updated
-                                                                        classifier,     #compiled classifier: gets trained
-                                                                        discriminator,  #discriminator: there to check discriminator accuracy
+                                                                        classifier,     #classifier: biological loss
+                                                                        discriminator,  #discriminator: adverserial loss
                                                                         0.00001,        #learning rate autoencoder
                                                                         0.001,          #learning rate classifier
                                                                         0.5,            #weighting of reconstructio loss vs. classifier loss
                                                                         True,           #True to enable simulatious adverserial training
                                                                         "uniform",      #loss function: log or uniform
-                                                                        False,          #True to freeze classifier weight updating
+                                                                        True,          #True to freeze classifier weight updating
                                                                         label_key,
                                                                         batch_key
                                                                         )
