@@ -60,6 +60,7 @@ history, autoencoder, classifier = autoencoder_classifier_jointtraining(
                                                                         batch_key
                                                                         )
 
+
 #Plot history
 figure = plot.joint(history)
 

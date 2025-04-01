@@ -90,8 +90,7 @@ def train_classifier(   adata,                      #autoencoded Dataset
     print("Test accuracy:", score[1])
     
     return history, model
-
-@tf.function 
+ 
 def joint_train(
         gene_expression, cell_labels, batch_labels, autoencoder, classifier, discriminator,
         optimizer_autoencoder, optimizer_classifier, lamda, adverserial, loss_function, freeze_classifier
@@ -122,6 +121,9 @@ def joint_train(
         # Adversarial loss - the lower the loss the worse the discriminator is at picking the correct batch
         if loss_function == 'log': adverserial_loss = loss_function_log(batch_labels, disc_output)
         elif loss_function == 'uniform': adverserial_loss = loss_function_uniform(batch_labels, disc_output)
+
+        #Make sure lamda is float32
+        lamda = tf.cast(lamda, tf.float32)   
 
         if adverserial == True:
             #Total loss: weighted by lamda_1 and lambda_2 and lambda_3
@@ -227,7 +229,19 @@ def autoencoder_classifier_jointtraining(
         # print epoch results
         print(f"Epoch {epoch+1}/{epochs}")
         print(f"Total Loss: {tot_loss_avg.result():.4f}")
-            
+
+        #save history
+        autoencoder_loss.append(rec_loss_avg.result())
+        classifier_loss.append(cls_loss_avg.result())
+
+    #Create history DataFrame    
+    history = pd.DataFrame({
+        'autoencoder_loss': autoencoder_loss,
+        'classifier_loss': classifier_loss
+        })
+    """
+        Deleted for now: computational heavy history with accuracies
+
         #save history
         autoencoder_loss.append(rec_loss_avg.result())
         classifier_loss.append(cls_loss_avg.result())
@@ -244,6 +258,8 @@ def autoencoder_classifier_jointtraining(
         'classifier_loss': classifier_loss,
         'classifier_accuracy': class_accuracies,
         'discriminator_accuracy': dis_accuracies
-        })
+        })"
+    """
+
     return history, autoencoder, classifier
 

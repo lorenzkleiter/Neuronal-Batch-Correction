@@ -9,14 +9,16 @@ import matplotlib
 import anndata
 from scipy import sparse
 import pandas as pd
+from models.autoencoder import autoencode
 
-
-def Scoring(    adata,         
-                integrated,
-                batch_key,
-                label_key,
-                 n_top_genes
+def scoring(    adata,                  #unintegrated Iput
+                autoencoder,            #autoencoder
+                label_key,              #Batchkey
+                batch_key,              #Labelkey
+                 n_top_genes            #True to enable Top 2000 varibel gene selection
             ):
+    #Autoencode data
+    integrated = autoencode(adata, autoencoder)
     #--Preprocessing--
     #Run PCA
     if n_top_genes == True:
@@ -77,5 +79,5 @@ def Scoring(    adata,
         'sil_batch': sil_batch,
         'avg_bio': avg_bio,
         'avg_batch': avg_batch
-        })
+        }, index=[0])
     return Scores
