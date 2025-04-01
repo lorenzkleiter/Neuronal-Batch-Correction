@@ -5,9 +5,11 @@
 from utils import loading
 from models.classifier import autoencoder_classifier_jointtraining
 import pandas as pd
-from utils.scores import scoring
+from utils.scores import scoring_autoencoder
 import warnings
 import tensorflow as tf
+import time
+
 #Ignore warnings
 warnings.filterwarnings("ignore")
 
@@ -18,12 +20,12 @@ batch_key = 'batch'
 
 #Define search space of Hyperparameters
 epochs = [30]
-batches = [64,256,1024]
-learning_rate = [0.01, 0.001, 0.0001, 0.00001]
-lambda_weight = [0.2, 0.8]
-loss_function = ["uniform","log"]
+batches = [128, 256, 512, 1024]
+learning_rate = [0.0001]
+lambda_weight = [0.8]
+loss_function = ["uniform"]
 column_names = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function']
-column_names_final = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function', 'ari',	'hvg',	'asw',	'f1',	'nmi',	'sil',	'graph',	'pcr',	'sil_batch',	'avg_bio',	'avg_batch']
+column_names_final = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function', 'ari',	'hvg',	'asw',	'f1',	'nmi',	'sil',	'graph',	'pcr',	'sil_batch',	'avg_bio',	'avg_batch', 'time']
 
 #generate pandas dataframe of all Hyperparameter combinations
 df = pd.DataFrame(columns=column_names)
@@ -43,7 +45,9 @@ df_history = []
 
 #Grid search loop
 for i in range(df.shape[0]):
-    
+    # Calculate the start time
+    start = time.time()
+
     #Import discriminator
     discriminator = loading.load_model('discriminator')
 
@@ -53,7 +57,7 @@ for i in range(df.shape[0]):
     #Import Classifier
     classifier = loading.load_model('classifier')
 
-    print("Run", i)
+    print("Run", i+1)
     print("Hyperparameters: ")
     print(df.loc[i]["epochs"], df.loc[i]["batch_size"], df.loc[i]["learning_rate"], df.loc[i]["lambda_weight"], df.loc[i]["loss_function"])
 
@@ -75,15 +79,22 @@ for i in range(df.shape[0]):
                                                                         batch_key
                                                                         )
     tf.keras.backend.clear_session()
-
     print("Start Scoring")
-    score = scoring(test,               #anndata object: Dataset
-                    autoencoder,        #autoencoder: gets scored
-                    label_key,
-                    batch_key,
-                    True                #True to enable Top 2000 varible gene selection
+    score = scoring_autoencoder(test,               #anndata object: Dataset
+                                autoencoder,        #autoencoder: gets scored
+                                label_key,
+                                batch_key,
+                                True                #True to enable Top 2000 varible gene selection
                     )
     print(score)
+
+    # Calculate the end time and time taken
+    end = time.time()
+    length = end - start
+    df_length = pd.DataFrame({
+        'time': length,
+        }, index=[0])
+    
     # Save history
     df_history.append({"run": i, "history": history})
 
@@ -94,14 +105,18 @@ for i in range(df.shape[0]):
 
     # Combine hyperparameters with scores horizontally
     new_row = pd.concat((hyperparams, score), axis=1)
+    # Combine hyperparameters with times horizontally
+    new_row = pd.concat((new_row, df_length), axis=1)
     print(new_row)
     # Add to results DataFrame
     df_results = pd.concat((df_results, new_row), ignore_index=True, axis=0)
     print(df_results)
 
+    # Save Scores into directory
+    file_name = "Score_Results.csv"
+    save_path = f"hyperparameters/{file_name}"
+    df_results.to_csv(save_path, index=False)
+    print(f"df_results saved to {save_path}")
 
-# Save Scores into directory
-file_name = "Score_Results.csv"
-save_path = f"hyperparameters/{file_name}"
-df_results.to_csv(save_path, index=False)
-print(f"df_results saved to {save_path}")
+    # Show the results : this can be altered however you like
+    print("It took", length, "seconds!")
