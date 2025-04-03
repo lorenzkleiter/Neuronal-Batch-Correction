@@ -20,10 +20,10 @@ batch_key = 'batch'
 
 #Define search space of Hyperparameters
 epochs = [30]
-batches = [128, 256, 512, 1024]
-learning_rate = [0.0001]
+batches = [64, 128, 256, 512, 640, 1024]
+learning_rate = [0.0001, 0.00001]
 lambda_weight = [0.8]
-loss_function = ["uniform"]
+loss_function = ["log", "uniform"]
 column_names = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function']
 column_names_final = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function', 'ari',	'hvg',	'asw',	'f1',	'nmi',	'sil',	'graph',	'pcr',	'sil_batch',	'avg_bio',	'avg_batch', 'time']
 
@@ -118,5 +118,5 @@ for i in range(df.shape[0]):
     df_results.to_csv(save_path, index=False)
     print(f"df_results saved to {save_path}")
 
-    # Show the results : this can be altered however you like
+    # Show the time
     print("It took", length, "seconds!")
