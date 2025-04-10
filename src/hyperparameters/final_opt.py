@@ -19,17 +19,17 @@ label_key = 'cell_type'
 batch_key = 'batch'
 
 #Define search space of Hyperparameters
-epochs = [30]
-batches = [64, 128, 256, 512, 640, 1024]
-learning_rate = [0.0001, 0.00001]
-lambda_weight = [0.8]
-loss_function = ["log", "uniform"]
+epochs = [40]
+batches = [128]
+learning_rate = [0.0001]
+lambda_weight = [0.4]
+loss_function = ["log"]
 column_names = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function']
 column_names_final = ['epochs', 'batch_size', 'learning_rate', 'lambda_weight', 'loss_function', 'ari',	'hvg',	'asw',	'f1',	'nmi',	'sil',	'graph',	'pcr',	'sil_batch',	'avg_bio',	'avg_batch', 'time']
 
 #generate pandas dataframe of all Hyperparameter combinations
 df = pd.DataFrame(columns=column_names)
-i= 0
+i=0
 for epoch in epochs:
     for batch in batches:
         for rates in learning_rate:
@@ -60,7 +60,7 @@ for i in range(df.shape[0]):
     print("Run", i+1)
     print("Hyperparameters: ")
     print(df.loc[i]["epochs"], df.loc[i]["batch_size"], df.loc[i]["learning_rate"], df.loc[i]["lambda_weight"], df.loc[i]["loss_function"])
-
+    print("cell labels: ", test.obs.shape)
     #Joint Training of all 3 components not updating discriminator weights
     history, autoencoder, classifier = autoencoder_classifier_jointtraining(
                                                                         test,                                #anndata object: Dataset

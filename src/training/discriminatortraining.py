@@ -49,7 +49,7 @@ def dctrainer(test, label_key, batch_key):
     return history
 
 #run function
-history = dctrainer(test, label_key, batch_key)
+#history = dctrainer(test, label_key, batch_key)
 
 #Plot history
-figure = plot.discriminator(history)
+#figure = plot.discriminator(history)

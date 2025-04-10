@@ -46,7 +46,7 @@ def cltrainer(test, label_key, batch_key):
 
   return history
 
-history = cltrainer(test, label_key, batch_key)
+#history = cltrainer(test, label_key, batch_key)
 
 #Plot history
-figure = plot.classifier(history)
+#figure = plot.classifier(history)
