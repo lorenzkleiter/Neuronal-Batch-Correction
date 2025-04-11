@@ -10,7 +10,7 @@ test = loading.load_dataset('Lung_atlas_public')
 label_key = 'cell_type'
 batch_key = 'batch'
 
-def actrainer(test, label_key, batch_key):
+def actrainer(test, batch_key, label_key):
     #Create and train Autoencoder on imported Data
     print("--Initilize Autoencoder--")
     autoencoder = create_autoencoder(   test,                          #anndata object: Only necessary to get size
@@ -33,7 +33,7 @@ def actrainer(test, label_key, batch_key):
     save_path = f"models/saved_models/{file_name}"
     autoencoder.save(save_path)
     print(f"autoencoder saved to {save_path}")
-
+    figure = plot.autoencoder(history)
     return history
 
 #history = actrainer(test, label_key, batch_key)

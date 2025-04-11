@@ -23,11 +23,11 @@ def scoring_autoencoder(    adata,                  #unintegrated Iput
     #Run PCA
     if n_top_genes == True:
         scib.pp.reduce_data(
-            integrated, n_top_genes=2000, batch_key="batch", pca=True, neighbors=True
+            integrated, n_top_genes=2000, batch_key=batch_key, pca=True, neighbors=True
         )
     elif n_top_genes == False:
           scib.pp.reduce_data(
-            integrated, batch_key="batch", pca=True, neighbors=True
+            integrated, batch_key=batch_key, pca=True, neighbors=True
         )    
           
     #Cluster PCA results
@@ -91,11 +91,11 @@ def scoring_integration(    adata,                  #unintegrated Iput
     #Run PCA
     if n_top_genes == True:
         scib.pp.reduce_data(
-            integrated, n_top_genes=2000, batch_key="batch", pca=True, neighbors=True
+            integrated, n_top_genes=2000, batch_key=batch_key, pca=True, neighbors=True
         )
     elif n_top_genes == False:
           scib.pp.reduce_data(
-            integrated, batch_key="batch", pca=True, neighbors=True
+            integrated, batch_key=batch_key, pca=True, neighbors=True
         )    
           
     #Cluster PCA results

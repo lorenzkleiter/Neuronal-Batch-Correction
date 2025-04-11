@@ -64,7 +64,7 @@ def create_classifier(  adata,                           #anndata object: Only n
 
 def train_classifier(   adata,                      #autoencoded Dataset
                         model,                      #compiled classifier
-                        EPOCH,                     #Epochs
+                        EPOCH,                      #Epochs
                         BATCH_SIZE,                 #Batch size
                         shuffle,                    #shuffle
                         label_key,                  #name of cell collumn
@@ -230,18 +230,7 @@ def autoencoder_classifier_jointtraining(
         print(f"Epoch {epoch+1}/{epochs}")
         print(f"Total Loss: {tot_loss_avg.result():.4f}")
 
-        #save history
-        autoencoder_loss.append(rec_loss_avg.result())
-        classifier_loss.append(cls_loss_avg.result())
-
-    #Create history DataFrame    
-    history = pd.DataFrame({
-        'autoencoder_loss': autoencoder_loss,
-        'classifier_loss': classifier_loss
-        })
-    """
-        Deleted for now: computational heavy history with accuracies
-
+        #Deleted for now: computational heavy history with accuracies
         #save history
         autoencoder_loss.append(rec_loss_avg.result())
         classifier_loss.append(cls_loss_avg.result())
@@ -258,8 +247,17 @@ def autoencoder_classifier_jointtraining(
         'classifier_loss': classifier_loss,
         'classifier_accuracy': class_accuracies,
         'discriminator_accuracy': dis_accuracies
-        })"
+        })
     """
+        #save history
+        autoencoder_loss.append(rec_loss_avg.result())
+        classifier_loss.append(cls_loss_avg.result())
 
+    #Create history DataFrame    
+    history = pd.DataFrame({
+        'autoencoder_loss': autoencoder_loss,
+        'classifier_loss': classifier_loss
+        })
+    """
     return history, autoencoder, classifier
 

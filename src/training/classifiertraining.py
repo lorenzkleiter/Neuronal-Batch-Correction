@@ -12,7 +12,7 @@ test = loading.load_dataset('Lung_atlas_public')
 label_key = 'cell_type'
 batch_key = 'batch'
 
-def cltrainer(test, label_key, batch_key):
+def cltrainer(test, batch_key, label_key):
   #Import Autoencoder
   autoencoder = loading.load_model('autoencoder_mseloss')
 
@@ -43,7 +43,7 @@ def cltrainer(test, label_key, batch_key):
   save_path = f"models/saved_models/{file_name}"
   classifier.save(save_path)
   print(f"classifier saved to {save_path}")
-
+  figure = plot.classifier(history)
   return history
 
 #history = cltrainer(test, label_key, batch_key)

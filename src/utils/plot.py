@@ -26,7 +26,8 @@ def discriminator(history):
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper right')
     plt.tight_layout()
-    plt.show()
+
+    figure.savefig('dis_history.png', dpi=figure.dpi)
 
     return figure
 
@@ -40,7 +41,7 @@ def autoencoder(history):
     plt.ylabel('Loss')
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper right')
-    plt.show()
+    figure.savefig('ac_history.png', dpi=figure.dpi)
     return figure
 
 #Used when you train an autoencoder adversial 
@@ -85,7 +86,7 @@ def joint(history):
     selected_keys = list(history.keys())[:4]
 
     # Create figure
-    plt.figure(figsize=(12, 6))
+    figure = plt.figure(figsize=(12, 6))
 
     # Loop through the selected keys and create subplots
     for i, key in enumerate(selected_keys, 1):
@@ -97,7 +98,8 @@ def joint(history):
         
     # Adjust layout
     plt.tight_layout()
-    plt.show()
+    figure.savefig('joint_history.png', dpi=figure.dpi)
+
 
 def classifier(history):
     #--Visualisize Training---
@@ -120,6 +122,6 @@ def classifier(history):
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Validation'], loc='upper right')
     plt.tight_layout()
-    plt.show()
+    figure.savefig('cl_history.png', dpi=figure.dpi)
 
     return figure

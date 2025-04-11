@@ -19,7 +19,7 @@ label_key = 'cell_type'
 batch_key = 'batch'
 
 #Define search space of Hyperparameters
-epochs = [40]
+epochs = [5]
 batches = [128]
 learning_rate = [0.0001]
 lambda_weight = [0.4]

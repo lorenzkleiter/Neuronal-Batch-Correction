@@ -13,7 +13,7 @@ label_key = 'cell_type'
 batch_key = 'batch'
 
 #Function for training discriminator
-def dctrainer(test, label_key, batch_key):
+def dctrainer(test, batch_key, label_key):
     #Import Autoencoder
     autoencoder = loading.load_model('autoencoder_mseloss')
 
@@ -45,7 +45,7 @@ def dctrainer(test, label_key, batch_key):
     save_path = f"models/saved_models/{file_name}"
     discriminator.save(save_path)
     print(f"discriminator saved to {save_path}")
-
+    figure = plot.discriminator(history)
     return history
 
 #run function

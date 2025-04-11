@@ -15,9 +15,6 @@ import pandas as pd
 #---Creating an autoencoder---
 #Input: Data, N_Hidden, activation functions 
 #Output: This Function returns an compiled autoencoder
-"""
-Missing right now! L2 reg. Leaky layer, custom. learning rate
-"""
 def create_autoencoder( 
                         adata,                          #anndata object: Only necessary to get size
                         N_HIDDEN,                       #int: Number of Nodes that the Encoder comprsses the data to
