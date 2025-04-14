@@ -55,12 +55,5 @@ integrated = nbc.integration(adata, batch_key, label_key, epochs, batch_size)
 - For very large datasets (>100k cells), consider increasing batch size to speed up computation
 - For highly heterogeneous datasets, increasing the number of epochs may improve integration quality
 
-## Citation
-
-If you use NBC in your research, please cite:
-```
-Citation information will go here
-```
-
 ## License
 This software is completely free to use for any purpose - academic, commercial, or personal - with no restrictions. You may modify, distribute, or incorporate it into other software without attribution.
