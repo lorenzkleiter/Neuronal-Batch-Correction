@@ -1,7 +1,7 @@
 import scib
-import nbc
+import neuronal_batch_correction.nbc as nbc
 import scanpy as sc
-import nbc
+import neuronal_batch_correction.nbc as nbc
 from scgen import SCGEN
 
 #Function including all integrators to test

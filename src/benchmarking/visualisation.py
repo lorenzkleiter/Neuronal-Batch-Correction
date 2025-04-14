@@ -4,7 +4,7 @@ from models.autoencoder import autoencode
 import pandas as pd
 import scanpy as sc
 import warnings
-import nbc
+import neuronal_batch_correction.nbc as nbc
 import matplotlib
 
 #Ignore warnings
