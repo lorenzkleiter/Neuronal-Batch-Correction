@@ -3,16 +3,11 @@ from setuptools import setup, find_packages
 setup(
     name="neuronal-batch-correction",
     version="1.0.0",
-    packages=find_packages(),
+    packages=find_packages(where="src"),
     install_requires=[
         "tensorflow==2.19.0",
         "scanpy==1.11.1",
-        "scib==1.1.7",
-        "numpy",
-        "scipy",
-        "anndata",
-        "matplotlib",
-        "pandas",
+        "scib==1.1.7"
     ],
     description="An autoencoder-based neural network for batch correction in single-cell data",
     long_description=open("README.md").read(),
