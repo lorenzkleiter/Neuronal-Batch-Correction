@@ -4,6 +4,7 @@ setup(
     name="neuronal-batch-correction",
     version="1.0.0",
     packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=[
         "tensorflow==2.19.0",
         "scanpy==1.11.1",
