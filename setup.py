@@ -25,5 +25,5 @@ setup(
         "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    python_requires="==3.10",
+    python_requires="==3.10.16",
 )
