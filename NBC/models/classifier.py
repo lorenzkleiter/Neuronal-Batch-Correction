@@ -80,7 +80,7 @@ def train_classifier(   adata,                      #autoencoded Dataset
 
     #Perform the training
     #Fit the input to the output
-    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=1, validation_split=0.2, shuffle=shuffle)
+    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=0, validation_split=0.2, shuffle=shuffle)
     
     return history, model
  
