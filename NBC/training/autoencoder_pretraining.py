@@ -2,8 +2,8 @@
 # autoencoder is trained with mse as loss function to reproduce data - to get intilisation
 
 #imports
-from utils import loading, plot
-from models.autoencoder import train_autoencoder, create_autoencoder
+from NBC.utils import loading, plot
+from NBC.models.autoencoder import train_autoencoder, create_autoencoder
 
 #Import Data
 test = loading.load_dataset('Lung_atlas_public')

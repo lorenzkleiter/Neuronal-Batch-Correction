@@ -3,10 +3,10 @@
 # updating all model’s weights, apart from the discriminator
 
 #imports
-from utils import loading, plot
-from models.classifier import create_classifier, autoencoder_classifier_jointtraining
-from models.discriminator import test_model
-from models.autoencoder import autoencode, create_autoencoder
+from NBC.utils import loading, plot
+from NBC.models.classifier import create_classifier, autoencoder_classifier_jointtraining
+from NBC.models.discriminator import test_model
+from NBC.models.autoencoder import autoencode, create_autoencoder
 
 #Import Data
 test = loading.load_dataset('Lung_atlas_public')

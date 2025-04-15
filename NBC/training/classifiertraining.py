@@ -2,9 +2,9 @@
 #cell classifier is trained to distinguish n cell types
 
 #imports
-from utils import loading, plot
-from models.autoencoder import autoencode
-from models.classifier import create_classifier, train_classifier 
+from NBC.utils import loading, plot
+from NBC.models.autoencoder import autoencode
+from NBC.models.classifier import create_classifier, train_classifier 
 import os
 
 #Import Data

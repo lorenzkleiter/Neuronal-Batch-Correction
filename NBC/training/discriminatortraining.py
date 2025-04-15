@@ -2,9 +2,9 @@
 # batch discriminator is trained to distinguish n batches 
 
 #imports
-from utils import loading, plot
-from models.autoencoder import train_autoencoder, create_autoencoder, autoencode
-from models.discriminator import create_discriminator, train_discriminator 
+from NBC.utils import loading, plot
+from NBC.models.autoencoder import train_autoencoder, create_autoencoder, autoencode
+from NBC.models.discriminator import create_discriminator, train_discriminator 
 import os
 
 #Import Data

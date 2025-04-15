@@ -1,10 +1,10 @@
 #master function
-from training.autoencoder_pretraining import actrainer
-from training.discriminatortraining import dctrainer
-from training.classifiertraining import cltrainer
-from training.autoencoder_finaltraining import jointtrainer
-from models.autoencoder import autoencode
-from utils import loading
+from NBC.training.autoencoder_pretraining import actrainer
+from NBC.training.discriminatortraining import dctrainer
+from NBC.training.classifiertraining import cltrainer
+from NBC.training.autoencoder_finaltraining import jointtrainer
+from NBC.models.autoencoder import autoencode
+from NBC.utils import loading
 
 
 def integration(

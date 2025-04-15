@@ -21,7 +21,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.model_selection import train_test_split
 
 #loss function
-from models.autoencoder import loss_function_log, loss_function_uniform
+from NBC.models.autoencoder import loss_function_log, loss_function_uniform
 
 
 def create_classifier(  adata,                           #anndata object: Only necessary to get size
