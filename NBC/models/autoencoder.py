@@ -45,8 +45,6 @@ def create_autoencoder(
 
     autoencoder = tf.keras.Model(input, decoded) #autoencoder: takes input and returns decoded data
 
-    print(autoencoder.summary())
-
     return autoencoder      #return an compiled autoencoder object
 
 #Function 2:

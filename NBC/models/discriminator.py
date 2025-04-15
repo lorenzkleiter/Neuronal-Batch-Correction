@@ -61,9 +61,6 @@ def create_discriminator(
     # Output layer (softmax for multi-class classification)
     model.add(Dense(OUTPUT_size, activation='softmax'))
 
-    # Summary of the whole model
-    model.summary()
-
     # model compilation
     model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])   
 

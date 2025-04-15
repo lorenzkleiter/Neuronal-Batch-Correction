@@ -54,9 +54,6 @@ def create_classifier(  adata,                           #anndata object: Only n
     # Output layer (softmax for multi-class classification)
     model.add(Dense(OUTPUT_size, activation='softmax'))
 
-    # Summary of the whole model
-    model.summary()
-
     # model compilation
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
