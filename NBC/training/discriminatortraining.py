@@ -7,11 +7,6 @@ from NBC.models.autoencoder import train_autoencoder, create_autoencoder, autoen
 from NBC.models.discriminator import create_discriminator, train_discriminator 
 import os
 
-#Import Data
-test = loading.load_dataset('Lung_atlas_public')
-label_key = 'cell_type'
-batch_key = 'batch'
-
 #Function for training discriminator
 def dctrainer(test, batch_key, label_key):
     #Import Autoencoder

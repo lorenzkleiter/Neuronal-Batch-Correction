@@ -8,11 +8,6 @@ from NBC.models.classifier import create_classifier, autoencoder_classifier_join
 from NBC.models.discriminator import test_model
 from NBC.models.autoencoder import autoencode, create_autoencoder
 
-#Import Data
-test = loading.load_dataset('Lung_atlas_public')
-label_key = 'cell_type'
-batch_key = 'batch'
-
 def jointtrainer(test, batch_key, label_key, epochs, batch_size):
   #Import discriminator
   discriminator = loading.load_model('discriminator')
@@ -54,10 +49,3 @@ def jointtrainer(test, batch_key, label_key, epochs, batch_size):
 
 #history = jointtrainer(test, label_key, batch_key, epochs)
 #figure = plot.joint(history)
-"""
-  #Save classifier into model directory
-  file_name = "classifier.keras"
-  save_path = f"models/saved_models/{file_name}"
-  classifier.save(save_path)
-  print(f"classifier saved to {save_path}")
-"""

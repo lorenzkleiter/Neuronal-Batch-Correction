@@ -5,11 +5,6 @@
 from NBC.utils import loading, plot
 from NBC.models.autoencoder import train_autoencoder, create_autoencoder
 
-#Import Data
-test = loading.load_dataset('Lung_atlas_public')
-label_key = 'cell_type'
-batch_key = 'batch'
-
 def actrainer(test, batch_key, label_key):
     #Create and train Autoencoder on imported Data
     print("--Initilize Autoencoder--")

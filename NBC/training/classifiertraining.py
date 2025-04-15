@@ -7,11 +7,6 @@ from NBC.models.autoencoder import autoencode
 from NBC.models.classifier import create_classifier, train_classifier 
 import os
 
-#Import Data
-test = loading.load_dataset('Lung_atlas_public')
-label_key = 'cell_type'
-batch_key = 'batch'
-
 def cltrainer(test, batch_key, label_key):
   #Import Autoencoder
   autoencoder = loading.load_model('autoencoder_mseloss')
