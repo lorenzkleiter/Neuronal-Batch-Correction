@@ -2,15 +2,11 @@
 #cell classifier is trained to distinguish n cell types
 
 #imports
-from NBC.utils import loading, plot
 from NBC.models.autoencoder import autoencode
 from NBC.models.classifier import create_classifier, train_classifier 
 import os
 
-def cltrainer(test, batch_key, label_key):
-  #Import Autoencoder
-  autoencoder = loading.load_model('autoencoder_mseloss')
-
+def cltrainer(test, label_key, autoencoder):
   print("--Autoencode Data--")
   #Autoencode Data
   test_autoencoded = autoencode(test, autoencoder)
@@ -33,15 +29,4 @@ def cltrainer(test, batch_key, label_key):
                                                   label_key                      #name of batch collumn
                                               )
 
-  #Save Discriminator into model directory
-  file_name = "classifier.keras"
-  save_path = f"NBC/models/{file_name}" 
-  classifier.save(save_path)
-  print(f"classifier saved to {save_path}")
-  figure = plot.classifier(history)
-  return history
-
-#history = cltrainer(test, label_key, batch_key)
-
-#Plot history
-#figure = plot.classifier(history)
+  return classifier

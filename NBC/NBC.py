@@ -4,7 +4,6 @@ from NBC.training.discriminatortraining import dctrainer
 from NBC.training.classifiertraining import cltrainer
 from NBC.training.autoencoder_finaltraining import jointtrainer
 from NBC.models.autoencoder import autoencode
-from NBC.utils import loading
 
 
 def integration(
@@ -15,14 +14,12 @@ def integration(
         batch_size
         ):
 
-    actrainer(adata, collumn_name_batches, collum_name_celltypes)
-    dctrainer(adata, collumn_name_batches, collum_name_celltypes)
-    cltrainer(adata, collumn_name_batches, collum_name_celltypes)
-    jointtrainer(adata, collumn_name_batches, collum_name_celltypes, epochs, batch_size)
-    autoencoder = loading.load_model("autoencoder_final_onestep")
+    autoencoder = actrainer(adata)
+    discriminator = dctrainer(adata, collumn_name_batches, autoencoder)
+    classifier = cltrainer(adata, collum_name_celltypes)
+    autoencoder = jointtrainer(adata, collumn_name_batches, collum_name_celltypes, epochs, batch_size, autoencoder, classifier, discriminator)
     print("--correct batch effect with trained autoencoder--")
     corrected_data = autoencode(adata, autoencoder)
-
     return corrected_data
 
 

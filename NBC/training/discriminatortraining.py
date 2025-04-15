@@ -2,16 +2,12 @@
 # batch discriminator is trained to distinguish n batches 
 
 #imports
-from NBC.utils import loading, plot
 from NBC.models.autoencoder import train_autoencoder, create_autoencoder, autoencode
 from NBC.models.discriminator import create_discriminator, train_discriminator 
 import os
 
 #Function for training discriminator
-def dctrainer(test, batch_key, label_key):
-    #Import Autoencoder
-    autoencoder = loading.load_model('autoencoder_mseloss')
-
+def dctrainer(test, batch_key, autoencoder):
     print("--Autoencode Data--")
     #Autoencode Data
     test_autoencoded = autoencode(test, autoencoder)
@@ -35,16 +31,4 @@ def dctrainer(test, batch_key, label_key):
                                                     batch_key                      #name of batch collumn
                                                 )
 
-    #Save Discriminator into model directory
-    file_name = "discriminator.keras"
-    save_path = f"NBC/models/{file_name}"
-    discriminator.save(save_path)
-    print(f"discriminator saved to {save_path}")
-    figure = plot.discriminator(history)
-    return history
-
-#run function
-#history = dctrainer(test, label_key, batch_key)
-
-#Plot history
-#figure = plot.discriminator(history)
+    return discriminator 
