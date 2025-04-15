@@ -32,10 +32,10 @@ pip install "git+https://github.com/lorenzkleiter/Neuronal-Batch-Correction.git"
 ## Usage Example
 
 ```python
-import nbc 
+import NBC 
 
 # Integrate data across batches
-integrated = nbc.integration(adata, batch_key, label_key, epochs, batch_size)
+integrated = NBC.integration(adata, batch_key, label_key, epochs, batch_size)
 ```
 
 ### Parameters
