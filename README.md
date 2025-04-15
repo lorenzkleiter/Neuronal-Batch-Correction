@@ -24,7 +24,7 @@ pip install "git+https://github.com/lorenzkleiter/Neuronal-Batch-Correction.git"
 
 ## Dependencies
 
-- Python = 3.10
+- Python = >=3.10, <3.11
 - Tensorflow = 2.19.0
 - Scanpy = 1.11.1
 - Scib = 1.7.1
