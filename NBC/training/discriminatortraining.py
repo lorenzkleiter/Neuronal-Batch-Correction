@@ -37,7 +37,7 @@ def dctrainer(test, batch_key, label_key):
 
     #Save Discriminator into model directory
     file_name = "discriminator.keras"
-    save_path = f"models/saved_models/{file_name}"
+    save_path = f"NBC/models/saved_models/{file_name}"
     discriminator.save(save_path)
     print(f"discriminator saved to {save_path}")
     figure = plot.discriminator(history)

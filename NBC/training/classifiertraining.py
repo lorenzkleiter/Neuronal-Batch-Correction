@@ -35,7 +35,7 @@ def cltrainer(test, batch_key, label_key):
 
   #Save Discriminator into model directory
   file_name = "classifier.keras"
-  save_path = f"models/saved_models/{file_name}"
+  save_path = f"NBC/models/saved_models/{file_name}"
   classifier.save(save_path)
   print(f"classifier saved to {save_path}")
   figure = plot.classifier(history)

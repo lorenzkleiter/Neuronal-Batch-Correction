@@ -25,7 +25,7 @@ def actrainer(test, batch_key, label_key):
 
     #Save autoencoder into model directory
     file_name = "autoencoder_mseloss.keras"
-    save_path = f"models/saved_models/{file_name}"
+    save_path = f"NBC/models/saved_models/{file_name}"
     autoencoder.save(save_path)
     print(f"autoencoder saved to {save_path}")
     figure = plot.autoencoder(history)

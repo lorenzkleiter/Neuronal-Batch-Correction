@@ -39,7 +39,7 @@ def jointtrainer(test, batch_key, label_key, epochs, batch_size):
 
   #Save autoencoder into model directory
   file_name = "autoencoder_final_onestep.keras"
-  save_path = f"models/saved_models/{file_name}"
+  save_path = f"NBC/models/saved_models/{file_name}"
   autoencoder.save(save_path)
   print(f"autoencoder saved to {save_path}")
 
