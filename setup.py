@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="NBC",
     version="0.1.0",
-    packages=['NBC', 'NBC.models', 'NBC.training', 'NBC.utils'],
+    packages=['NBC', 'NBC.models', 'NBC.training'],
     url='https://github.com/lorenzkleiter/Neuronal-Batch-Correction',
     description='An autoencoder-based neural network for batch correction in single-cell data',
     install_requires=[
