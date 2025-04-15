@@ -74,7 +74,7 @@ def train_autoencoder(
                 batch_size=BATCH_SIZE,
                 shuffle=True, 
                 validation_data=(INPUT, INPUT),
-                verbose=2) # shuffle the data after each epoch to reduce overfitting
+                verbose=1) # shuffle the data after each epoch to reduce overfitting
     return history, autoencoder 
 
 

@@ -80,11 +80,7 @@ def train_classifier(   adata,                      #autoencoded Dataset
 
     #Perform the training
     #Fit the input to the output
-    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=2, validation_split=0.2, shuffle=shuffle)
-     #score the network
-    score = model.evaluate(INPUT_test, OUTPUT_test, verbose=0)
-    print("\nTest score/loss:", score[0])
-    print("Test accuracy:", score[1])
+    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=1, validation_split=0.2, shuffle=shuffle)
     
     return history, model
  
@@ -225,27 +221,7 @@ def autoencoder_classifier_jointtraining(
         
         # print epoch results
         print(f"Epoch {epoch+1}/{epochs}")
-        print(f"Total Loss: {tot_loss_avg.result():.4f}")
-
-        #Deleted for now: computational heavy history with accuracies
-        #save history
-        autoencoder_loss.append(rec_loss_avg.result())
-        classifier_loss.append(cls_loss_avg.result())
-        print(f"Classifier accuracy: ")
-        class_accuracy = classifier.evaluate(autoencoder(GENE_EXPRESSION), CELL_TYPES, verbose=2)[1]
-        class_accuracies.append(class_accuracy)
-        print(f"Discriminator accuracy: ")
-        dis_accuracy = discriminator.evaluate(autoencoder(GENE_EXPRESSION), BATCH_LABELS, verbose=2)[1]
-        dis_accuracies.append(dis_accuracy)
-
-    #Create history DataFrame    
-    history = pd.DataFrame({
-        'autoencoder_loss': autoencoder_loss,
-        'classifier_loss': classifier_loss,
-        'classifier_accuracy': class_accuracies,
-        'discriminator_accuracy': dis_accuracies
-        })
-    """
+ 
         #save history
         autoencoder_loss.append(rec_loss_avg.result())
         classifier_loss.append(cls_loss_avg.result())
@@ -255,6 +231,6 @@ def autoencoder_classifier_jointtraining(
         'autoencoder_loss': autoencoder_loss,
         'classifier_loss': classifier_loss
         })
-    """
+
     return history, autoencoder, classifier
 

@@ -4,7 +4,7 @@ from NBC.training.discriminatortraining import dctrainer
 from NBC.training.classifiertraining import cltrainer
 from NBC.training.autoencoder_finaltraining import jointtrainer
 from NBC.models.autoencoder import autoencode
-
+import warnings
 
 def integration(
         adata,                  	#anndata: your scRNA-dataset in anndata format. Batch and cell labels necessary
@@ -13,7 +13,7 @@ def integration(
         epochs,                      #int: number of epochs for joint training
         batch_size
         ):
-
+    warnings.filterwarnings('ignore')
     autoencoder = actrainer(adata)
     discriminator = dctrainer(adata, collumn_name_batches, autoencoder)
     classifier = cltrainer(adata, collum_name_celltypes, autoencoder)

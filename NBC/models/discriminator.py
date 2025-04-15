@@ -94,14 +94,9 @@ def train_discriminator(
     #Perform a Train Test Split
     INPUT_train, INPUT_test, OUTPUT_train, OUTPUT_test = train_test_split(INPUT, OUTPUT, test_size=0.1, random_state=random_seed)
 
-    #score the network
-    score = model.evaluate(INPUT_test, OUTPUT_test, verbose=2)
-    print("\nTest score/loss:", score[0])
-    print("Test accuracy:", score[1])
-
     #Perform the training
     #Fit the input to the output
-    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=2, validation_split=0.2, shuffle=shuffle)
+    history = model.fit(INPUT_train, OUTPUT_train, batch_size=BATCH_SIZE, epochs=EPOCH, verbose=1, validation_split=0.2, shuffle=shuffle)
    
     return history, model
 
