@@ -43,8 +43,7 @@ def create_discriminator(
     #Output and Input size of NN
     INPUT_size = INPUT[0].size
     OUTPUT_size = OUTPUT[0].size
-    print(INPUT_size)
-    print(OUTPUT_size)
+
 
     #---Initilize Model---
     #create optimizer

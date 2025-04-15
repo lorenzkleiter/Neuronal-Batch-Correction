@@ -16,7 +16,7 @@ def integration(
 
     autoencoder = actrainer(adata)
     discriminator = dctrainer(adata, collumn_name_batches, autoencoder)
-    classifier = cltrainer(adata, collum_name_celltypes)
+    classifier = cltrainer(adata, collum_name_celltypes, autoencoder)
     autoencoder = jointtrainer(adata, collumn_name_batches, collum_name_celltypes, epochs, batch_size, autoencoder, classifier, discriminator)
     print("--correct batch effect with trained autoencoder--")
     corrected_data = autoencode(adata, autoencoder)
